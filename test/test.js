@@ -107,7 +107,7 @@ describe('todos', () => {
     });
   });
 
-  describe.skip('readAll', () => {
+  describe('readAll', () => {
     it('should return an empty array when there are no todos', (done) => {
       todos.readAll((err, todoList) => {
         expect(err).to.be.null;
