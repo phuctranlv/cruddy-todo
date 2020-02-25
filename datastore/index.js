@@ -42,13 +42,20 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  const fileDir = exports.dataDir + '/';
+
+  fs.readdir(fileDir, (err, files) => {
+    var fileIds = _.map(files, (fileName) => {
+      return fileName.slice(0, 5);
+    });
+    if (fileIds.includes(id)) {
+      fs.writeFile(exports.dataDir + '/' + id + '.txt', text, (err) => {
+        callback(null, { id, text });
+      });
+    } else {
+      callback(new Error(`No item with id: ${id}`));
+    }
+  });
 };
 
 exports.delete = (id, callback) => {
