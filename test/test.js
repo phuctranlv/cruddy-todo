@@ -188,7 +188,7 @@ describe('todos', () => {
     });
   });
 
-  describe.skip('delete', () => {
+  describe('delete', () => {
     beforeEach((done) => {
       todos.create('delete this todo', done);
     });
