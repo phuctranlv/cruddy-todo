@@ -25,9 +25,25 @@ exports.create = (text, callback) => {
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, arrayOfFiles) => {
     var dataArray = _.map(arrayOfFiles, (file) => {
-      return {id: file.slice(0, 5), text: file.slice(0, 5)};
+      return new Promise((resolve, reject) => {
+        fs.readFile(exports.dataDir + '/' + file, (err, content) => {
+          // console.log(exports.dataDir + '/' + file);
+          // console.log(content.toString());
+          if (err) {
+            reject(err);
+          }
+          resolve({id: file.slice(0, 5), text: content.toString()});
+        }
+        );
+      });
     });
-    callback(null, dataArray);
+    Promise.all(dataArray).then((result) => {
+      // console.log('the result is:', result);
+      callback(null, result);
+    }).catch((err) => {
+      // console.log('error logging:', err);
+      callback(err, null);
+    });
   });
 };
 
@@ -37,7 +53,7 @@ exports.readOne = (id, callback) => {
       callback(new Error(`No item with id: ${id}`));
       return;
     }
-    callback(null, {id, text: content.toString()});
+    callback(null, { id, text: content.toString() });
   });
 };
 
